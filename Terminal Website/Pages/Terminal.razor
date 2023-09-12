@@ -1,0 +1,23 @@
+﻿<!-- Terminal.razor -->
+@page "/terminal"
+<div class="input-container">
+<pre>>@output</pre>
+    <input @bind="input" @onkeyup="HandleInput" class="custom-input" />
+    <div class="blinking-caret"></div>
+</div>
+
+@code {
+    private string input = "";
+    private string output = "";
+
+    private void HandleInput(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            // Process the command entered in 'input' and update 'output'
+            output += $"> {input}\n"; // Echo the input
+                                      // Implement logic to execute commands and update 'output'
+            input = ""; // Clear the input
+        }
+    }
+}

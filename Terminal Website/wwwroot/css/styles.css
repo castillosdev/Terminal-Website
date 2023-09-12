@@ -1,0 +1,38 @@
+﻿html {
+font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    color: limegreen;
+    background-color: black;
+}
+@keyframes blink-caret {
+    0%, 100% {
+        border-right-color: transparent;
+    }
+
+    50% {
+        border-right-color: #000; /* Color of the caret (black in this example) */
+    }
+}
+
+.input-container {
+    position: relative;
+display: inline-block;
+background-color: black;
+color: limegreen;
+width: 100%;
+}
+
+.blinking-caret {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+    animation: blink-caret 0.75s step-end infinite;
+    border-right: 2px solid transparent;
+}
+
+.custom-input {
+    padding-right: 20px; /* Adjust the padding to accommodate the caret */
+    /* Add other input styling here */
+}
