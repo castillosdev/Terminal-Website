@@ -1,23 +1,98 @@
-﻿<!-- Terminal.razor -->
-@page "/terminal"
+﻿@page "/"
+
 <div class="input-container">
-<pre>>@output</pre>
-    <input @bind="input" @onkeyup="HandleInput" class="custom-input" />
-    <div class="blinking-caret"></div>
+    @if (!_about && !_contact && !_help)
+    {
+        <pre>> Type a command...</pre>
+    }
+    <div class="output-container">
+        @foreach (var inputOutputPair in _inputOutputPairs)
+        {
+            <div class="output-line">
+                <pre>@inputOutputPair.Input</pre>
+                <pre>@inputOutputPair.Output</pre>
+            </div>
+        }
+    </div>
+    <div>
+        @if (_about)
+        {
+            <div class="component-content">
+                <About />
+                <pre>Yep, I'm an About page.</pre>
+            </div>
+        }
+        else if (_contact)
+        {
+            <div class="component-content">
+                <Contact />
+                <pre>Yep, I'm a contact page.</pre>
+            </div>
+        }
+        else if (_help)
+        {
+            <div class="component-content">
+                <Help />
+                <pre>Yep, I'm a help page.</pre>
+            </div>
+        }
+    </div>
+
+    <label class="custom-input">
+        <input type="text" @bind="_input" @onkeyup="HandleInput" class="custom-input" />
+    </label>
+
 </div>
 
 @code {
-    private string input = "";
-    private string output = "";
+    private string _input = "";
+    private List<InputOutputPair> _inputOutputPairs = new List<InputOutputPair>();
+    private bool _about = false;
+    private bool _contact = false;
+    private bool _help = false;
 
     private void HandleInput(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key != "Enter") return;
+
+        string inputCommand = _input.Trim();
+
+        // Check the entered command and set the corresponding flag to true
+        if (inputCommand.Equals("about", StringComparison.OrdinalIgnoreCase))
         {
-            // Process the command entered in 'input' and update 'output'
-            output += $"> {input}\n"; // Echo the input
-                                      // Implement logic to execute commands and update 'output'
-            input = ""; // Clear the input
+            _about = true;
+            _contact = false;
+            _help = false; // Clear other flags
         }
+        else if (inputCommand.Equals("contact", StringComparison.OrdinalIgnoreCase))
+        {
+            _about = false;
+            _contact = true;
+            _help = false; // Clear other flags
+        }
+        else if (inputCommand.Equals("help", StringComparison.OrdinalIgnoreCase))
+        {
+            _about = false;
+            _contact = false;
+            _help = true;
+            // Clear other flags if needed
+        }
+        else
+        {
+            // Handle unrecognized commands
+            _inputOutputPairs.Add(new InputOutputPair
+            {
+                Input = $">{_input}",
+                Output = "Command not recognized."
+            });
+        }
+
+        _input = "";
+    }
+
+    private class InputOutputPair
+    {
+        public string Input { get; set; }
+        public string Output { get; set; }
     }
 }
